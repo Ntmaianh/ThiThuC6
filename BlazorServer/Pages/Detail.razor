@@ -1,0 +1,38 @@
+﻿@page "/Detail/{id}"
+@using BlazorServer.Service
+@using Domain
+<h3>Chi tiết sản phẩm</h3>
+
+<div class="form-group">
+    <label for="name">Tên sản phẩm</label>
+    <input id="name" class="form-control" @bind-value="product.Name" />
+</div>
+<div class="form-group">
+    <label for="price">Tên sản phẩm</label>
+    <input id="price" class="form-control" @bind-value="product.Price" />
+</div>
+
+<div class="form-group">
+    <button class="btn btn-info" @onclick="UpDate">Lưu thông tin</button>
+</div>
+@code {
+    [Inject]
+    private IService _service { get; set; }
+    [Inject]
+    NavigationManager navigation { get; set; }
+    [Parameter]
+    public string Id { get; set; }
+    Product product { get; set; } = new Product();
+
+    protected override async Task OnInitializedAsync()
+    {
+        product = await _service.GetProductById(Guid.Parse(Id));
+    }
+
+    private async void UpDate()
+    {
+        await _service.Update(product);
+        navigation.NavigateTo("/list");
+    }
+
+}

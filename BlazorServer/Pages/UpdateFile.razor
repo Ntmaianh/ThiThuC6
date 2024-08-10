@@ -1,0 +1,20 @@
+﻿@page "/UpdateFile"
+<h3>UpdateFile</h3>
+<InputFile class="btn btn-primary" OnChange="FileSelected" accept=".jpg,.jpeg,.tiff"></InputFile>
+<button class="btn btn-secondary" @onclick="UpLoadFile">UpLoadFile</button>
+@code {
+    private IBrowserFile file;
+
+    private async Task FileSelected(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+    }
+    private async void UpLoadFile()
+    {
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/file", file.Name);
+        await using(FileStream stream = new FileStream(filePath,FileMode.Create))
+        {
+            await file.OpenReadStream().CopyToAsync(stream);
+        }
+    }
+}
